@@ -31,5 +31,5 @@ jobs:
         tag: ${{ github.sha }}
         username: ${{ secrets.CI_AUTH_REGISTRY_USERNAME }}
         password: ${{ secrets.CI_AUTH_REGISTRY_PASSWORD }}
-        build_file: .Dockerfile
+        build_file: Dockerfile
         path: .
