@@ -1,0 +1,35 @@
+name: Build_And_Push
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Environments
+      run: |
+        export REPO_NAME=`echo ${{ github.repository }} | cut -d '/' -f2`
+        export REGISTRY_NAME=willguitaradmfar
+        export IMAGE_NAME=$REGISTRY_NAME/$REPO_NAME
+
+        echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+        echo "REGISTRY_NAME=$REGISTRY_NAME" >> $GITHUB_ENV
+        echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+    - name: Build
+      uses: aevea/action-kaniko@master
+      with:
+        extra_args: --reproducible=false
+        image: ${{ env.IMAGE_NAME }}
+        tag_with_latest: true
+        tag: ${{ github.sha }}
+        username: ${{ secrets.CI_AUTH_REGISTRY_USERNAME }}
+        password: ${{ secrets.CI_AUTH_REGISTRY_PASSWORD }}
+        build_file: .Dockerfile
+        path: .
