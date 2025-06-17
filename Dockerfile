@@ -1,13 +1,14 @@
 FROM mongo:4.4.19-rc1-focal
 
-# Instalar dependências e importar GPG key do MongoDB 4.4
+# Instalar ferramentas e importar chave GPG do MongoDB 4.4
 RUN apt-get update && \
     apt-get install -y gnupg wget python3-pip && \
-    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add - && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    pip3 install awscli
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+      --recv-keys 656408E390CFB1F5 && \
+    pip3 install awscli && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copia e configura script
+# Copia e define permissões do script de backup
 ADD backup.sh /app/backup.sh
 RUN chmod +x /app/backup.sh
 
